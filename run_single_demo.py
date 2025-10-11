@@ -52,8 +52,8 @@ if __name__ == '__main__':
     color = cv2.resize(color, (W, H), interpolation=cv2.INTER_NEAREST)
 
     plot_img = copy.deepcopy(color)
-    cv2.imshow('Initial RGB image', color[..., ::-1])
-    cv2.waitKey(0)
+    # cv2.imshow('Initial RGB image', color[..., ::-1])
+    # cv2.waitKey(0)
 
     depth = cv2.imread(args.depth_path, -1) / 1e3  # mm→m
     depth = cv2.resize(depth, (W, H), interpolation=cv2.INTER_NEAREST)
@@ -75,8 +75,10 @@ if __name__ == '__main__':
     # logging.info("Pose estimation complete, saved to pose_result.txt")
 
     # === 可视化结果 ===
-    center_pose = pose @ np.linalg.inv(to_origin)
-
+    # center_pose = pose @ np.linalg.inv(to_origin)
+    # Directly use the estimated pose without to_origin. 
+    # This is because the to_origin transformation may not be accurate for some objects.
+    center_pose = pose
     vis = draw_posed_3d_box(K, img=plot_img, ob_in_cam=center_pose, bbox=bbox)
     vis = draw_xyz_axis(vis, ob_in_cam=center_pose, scale=0.1, K=K, thickness=3, transparency=0, is_input_rgb=True)
     cv2.imshow('Pose Estimation', vis[..., ::-1])
